@@ -28,3 +28,41 @@ export const routes = [
         category: "technology",
     },
 ];
+
+export const navbarRoutes = [
+    {
+        path: "/",
+        name: "general",
+        current: true,
+    },
+    {
+        path: "/business",
+        name: "business",
+        current: false,
+    },
+    {
+        path: "/entertainment",
+        name: "entertainment",
+        current: false,
+    },
+    {
+        path: "/health",
+        name: "health",
+        current: false,
+    },
+    {
+        path: "/science",
+        name: "science",
+        current: false,
+    },
+    {
+        path: "/sports",
+        name: "sports",
+        current: false,
+    },
+    {
+        path: "/technology",
+        name: "technology",
+        current: false,
+    },
+];

@@ -27,6 +27,7 @@ const App = () => {
                                 <Route
                                     exact
                                     path={route.path}
+                                    key={route.path}
                                     element={
                                         <NewsGroup
                                             setProgress={setProgress}

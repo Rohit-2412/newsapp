@@ -28,6 +28,10 @@ const NewsGroup = (props) => {
         props.setProgress(30);
         let parsedData = await data.json();
         props.setProgress(70);
+        // filter out articles with no description
+        parsedData.articles = parsedData.articles.filter(
+            (article) => article.description !== null
+        );
         setArticles(parsedData.articles);
         setTotalResults(parsedData.totalResults);
         setLoading(false);
@@ -46,16 +50,10 @@ const NewsGroup = (props) => {
 
     return (
         <>
-            <h1
-                className="text-center display-4 font-weight-bold"
-                style={{
-                    margin: "35px 0px",
-                    marginTop: "90px",
-                    fontWeight: "400",
-                }}
-            >
-                NewsMonkey - Top {capitalize(props.category)} Headlines
+            <h1 className="text-center font-semibold text-5xl mt-4 mb-10">
+                Top {capitalize(props.category)} Headlines
             </h1>
+
             {loading && <Spinner />}
 
             <InfiniteScroll
@@ -64,30 +62,18 @@ const NewsGroup = (props) => {
                 hasMore={articles.length !== totalResults}
                 loader={<Spinner />}
             >
-                <div className="container">
-                    <div className="row">
-                        {articles.map((element) => (
-                            <div className="col-md-3" key={element.url}>
+                <div className="container px-10 lg:px-8 md:px-6 sm:px-4">
+                    <div className="grid grid-cols-2 gap-5">
+                        {articles.map((item) => (
+                            <div className="w-full px-2" key={item.url}>
                                 <NewsItem
-                                    title={
-                                        element.title
-                                            ? element.title.slice(0, 40)
-                                            : ""
-                                    }
-                                    description={
-                                        element.description
-                                            ? element.description.slice(0, 88)
-                                            : ""
-                                    }
-                                    imageUrl={
-                                        element.urlToImage
-                                            ? element.urlToImage
-                                            : "https://1001freedownloads.s3.amazonaws.com/vector/thumb/106167/news.png"
-                                    }
-                                    newsUrl={element.url}
-                                    author={element.author}
-                                    date={element.publishedAt}
-                                    source={element.source.name}
+                                    title={item.title}
+                                    description={item.description}
+                                    imageUrl={item.urlToImage}
+                                    newsUrl={item.url}
+                                    author={item.author}
+                                    date={item.publishedAt}
+                                    source={item.source.name}
                                 />
                             </div>
                         ))}
