@@ -1,53 +1,49 @@
-import './App.css';
-import Navbar from './components/Navbar';
-import NewsGroup from './components/NewsGroup';
-import React, { Component } from 'react'
-import LoadingBar from 'react-top-loading-bar'
+import "./App.css";
+import Navbar from "./components/Navbar";
+import NewsGroup from "./components/NewsGroup";
+import React, { useState } from "react";
+import LoadingBar from "react-top-loading-bar";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import NewsProvider from "./NewsProvider";
+import { routes } from "./utils/data";
 
-import {
-    BrowserRouter as Router,
-    Route,
-    Routes
-} from 'react-router-dom'
+const App = () => {
+    const pageSize = 8;
+    const [progress, setProgress] = useState(0);
 
-
-export default class App extends Component {
-    pageSize = 8;
-    apiKey = process.env.REACT_APP_NEWS_API
-    state = {
-        progress: 0
-    }
-
-    setProgress = (progress) => {
-        this.setState({
-            progress: progress
-        })
-    }
-    render() {
-        return (
-            <>
+    return (
+        <>
+            <NewsProvider>
                 <Router>
                     <Navbar />
-
                     <LoadingBar
                         height={3}
-                        color='#f11946'
-                        progress={this.state.progress}
+                        color="#f11946"
+                        progress={progress}
                     />
-
                     <Routes>
-                        <Route exact path='/' element={<NewsGroup setProgress={this.setProgress} apiKey={this.apiKey} key="" pageSize={this.pageSize} country="in" category="general" />} />
-                        <Route exact path='/business' element={<NewsGroup setProgress={this.setProgress} apiKey={this.apiKey} key="business" pageSize={this.pageSize} country="in" category="business" />} />
-                        <Route exact path='/entertainment' element={<NewsGroup setProgress={this.setProgress} apiKey={this.apiKey} key="entertainment" pageSize={this.pageSize} country="in" category="entertainment" />} />
-                        <Route exact path='/health' element={<NewsGroup setProgress={this.setProgress} apiKey={this.apiKey} key="health" pageSize={this.pageSize} country="in" category="health" />} />
-                        <Route exact path='/general' element={<NewsGroup setProgress={this.setProgress} apiKey={this.apiKey} key="general" pageSize={this.pageSize} country="in" category="general" />} />
-                        <Route exact path='/science' element={<NewsGroup setProgress={this.setProgress} apiKey={this.apiKey} key="science" pageSize={this.pageSize} country="in" category="science" />} />
-                        <Route exact path='/sports' element={<NewsGroup setProgress={this.setProgress} apiKey={this.apiKey} key="sports" pageSize={this.pageSize} country="in" category="sports" />} />
-                        <Route exact path='/technology' element={<NewsGroup setProgress={this.setProgress} apiKey={this.apiKey} key="technology" pageSize={this.pageSize} country="in" category="technology" />} />
+                        {routes.map((route) => {
+                            return (
+                                <Route
+                                    exact
+                                    path={route.path}
+                                    element={
+                                        <NewsGroup
+                                            setProgress={setProgress}
+                                            key={route.category}
+                                            pageSize={pageSize}
+                                            country="in"
+                                            category={route.category}
+                                        />
+                                    }
+                                />
+                            );
+                        })}
                     </Routes>
-
                 </Router>
-            </>
-        )
-    }
-}
+            </NewsProvider>
+        </>
+    );
+};
+
+export default App;

@@ -1,33 +1,85 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-// export class Navbar extends Component {
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { useNewsContext } from "../NewsProvider";
+import { capitalize } from "../utils/helperFunctions";
+import { routes } from "../utils/data";
+
 const Navbar = () => {
-    // render() {
+    const [query, setQuery] = useState("");
+    const { setArticles } = useNewsContext();
+
+    const handleSearch = async (e) => {
+        e.preventDefault();
+
+        const url = `https://newsapi.org/v2/everything?q=${query}&sortBy=popularity&apiKey=${process.env.REACT_APP_NEWS_API}`;
+
+        const res = await fetch(url);
+
+        const { articles } = await res.json();
+
+        setArticles(articles);
+    };
+
     return (
         <div>
             <nav className="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
                 <div className="container-fluid">
-                    <Link className="navbar-brand" to="/">NewsMonkey</Link>
-                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <Link className="navbar-brand" to="/">
+                        NewsMonkey
+                    </Link>
+                    <button
+                        className="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                    >
                         <span className="navbar-toggler-icon"></span>
                     </button>
-                    <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                    <div
+                        className="collapse navbar-collapse"
+                        id="navbarSupportedContent"
+                    >
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li className="nav-item"><Link className="nav-link" aria-current="page" to="/">Home</Link></li>
-                            <li className="nav-item"><Link className="nav-link" to="/business">Business</Link></li>
-                            <li className="nav-item"><Link className="nav-link" to="/entertainment">Entertainment</Link></li>
-                            <li className="nav-item"><Link className="nav-link" to="/general">General</Link></li>
-                            <li className="nav-item"><Link className="nav-link" to="/health">Health</Link></li>
-                            <li className="nav-item"><Link className="nav-link" to="/science">Science</Link></li>
-                            <li className="nav-item"><Link className="nav-link" to="/sports">Sports</Link></li>
-                            <li className="nav-item"><Link className="nav-link" to="/technology">Technology</Link></li>
+                            {routes.map((route) => {
+                                return (
+                                    <li className="nav-item" key={route.path}>
+                                        <Link
+                                            className="nav-link"
+                                            aria-current="page"
+                                            to={route.path}
+                                        >
+                                            {capitalize(route.category)}
+                                        </Link>
+                                    </li>
+                                );
+                            })}
                         </ul>
                     </div>
+                    <form className="form-inline d-flex gap-2">
+                        <input
+                            className="form-control mr-sm-2"
+                            type="search"
+                            value={query}
+                            placeholder="Search"
+                            aria-label="Search"
+                            id="search"
+                            onChange={(e) => setQuery(e.target.value)}
+                        />
+                        <button
+                            className="btn btn-outline-success"
+                            type="submit"
+                            onClick={handleSearch}
+                        >
+                            Search
+                        </button>
+                    </form>
                 </div>
             </nav>
         </div>
-    )
-    // }
-}
+    );
+};
 
-export default Navbar
+export default Navbar;
